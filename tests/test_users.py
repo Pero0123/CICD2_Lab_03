@@ -39,12 +39,10 @@ def test_delete_then_404(client):
  
 def test_put_404(client):
     client.post("/api/users", json=user_payload())
-    result = client.put("/api/users/2",json=user_payload())
+    result = client.put("/api/users/20",json=user_payload())
     assert result.status_code == 404
 
 def test_put_200(client):
     client.post("/api/users", json=user_payload())
     result = client.put("/api/users/1",json=user_payload(uid=10, name="Jim"))
     assert result.status_code == 200
-   
- 
