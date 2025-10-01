@@ -16,16 +16,6 @@ def test_duplicate_user_id_conflict(client):
     assert r.status_code == 409 # duplicate id -> conflict
     assert "exists" in r.json()["detail"].lower()
  
-@pytest.mark.parametrize("bad_sid", ["BAD123", "s1234567", "S123", "S12345678"])
-def test_bad_student_id_422(client, bad_sid):
-    r = client.post("/api/users", json=user_payload(uid=3, sid=bad_sid))
-    assert r.status_code == 422 # pydantic validation error
- 
-@pytest.mark.parametrize("bad_email", ["fakeEmai", "FakeEmail1", "@email"])
-def test_bad_email_422(client, bad_email):
-    r = client.post("/api/users", json=user_payload(uid=3, email=bad_email))
-    assert r.status_code == 422 # pydantic validation error
- 
 def test_get_user_404(client):
     r = client.get("/api/users/999")
     assert r.status_code == 404
@@ -46,3 +36,13 @@ def test_put_200(client):
     client.post("/api/users", json=user_payload())
     result = client.put("/api/users/1",json=user_payload(uid=10, name="Jim"))
     assert result.status_code == 200
+
+    @pytest.mark.parametrize("bad_sid", ["BAD123", "s1234567", "S123", "S12345678"])
+def test_bad_student_id_422(client, bad_sid):
+    r = client.post("/api/users", json=user_payload(uid=3, sid=bad_sid))
+    assert r.status_code == 422 # pydantic validation error
+ 
+@pytest.mark.parametrize("bad_email", ["fakeEmai", "FakeEmail1", "@email"])
+def test_bad_email_422(client, bad_email):
+    r = client.post("/api/users", json=user_payload(uid=3, email=bad_email))
+    assert r.status_code == 422 # pydantic validation error
