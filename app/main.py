@@ -37,4 +37,15 @@ def add_user(payload: UserCreate, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=409, detail="User already exists")
     return user
+
+def delete_user(payload: UserCreate, db: Session = Depends(get_db)):
+    user = UserDB(**payload.model_dump())
+    db.add(user)
+    try:
+        db.commit()
+        db.refresh(user)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="User already exists")
+    return user
     
